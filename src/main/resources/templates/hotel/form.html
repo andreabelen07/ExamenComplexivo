@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${titulo}"></title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Estilos personalizados */
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        .form-container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .form-column {
+            flex: 1;
+            margin-right: 20px;
+        }
+
+        .form-column:last-child {
+            margin-right: 0;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+        }
+
+        .form-actions {
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        .form-actions button {
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .form-actions button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Ajustes para el select */
+        select {
+            height: 50px;
+        }
+
+        footer {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<header th:replace="layout/layout :: header"></header>
+<div class="container mt-5">
+    <h2 th:text="${titulo}"></h2>
+    <form th:action="@{/hotel/form}" th:object="${habitacion}" method="post">
+        <div class="form-container">
+            <div class="form-column">
+                <div class="form-group">
+                    <label for="name">Numero de Habitacion:</label>
+                    <input type="text" id="name" th:field="*{numHabitacion}" required />
+                </div>
+                <div class="form-group">
+                    <label for="description">Descripción:</label>
+                    <input type="text" id="description" th:field="*{descripcion}" required />
+                </div>
+                <div class="form-group">
+                    <label for="tipo">Tipo:</label>
+                    <select id="tipo" name="tipo" class="form-control" style="height: 50px;">
+                        <option value="">Seleccione una categoría</option>
+                        <option th:each="tip : ${tipos}"
+                                th:value="${tip}"
+                                th:text="${tip}"
+                                th:selected="${tip == habitacion.tipo}">
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-column">
+                <div class="form-group">
+                    <label for="price">Precio por Noche:</label>
+                    <input type="number" step="0.01" id="price" th:field="*{precioNoche}" required />
+                </div>
+                <div class="form-group">
+                    <label for="estado">Estado:</label>
+                    <select id="estado" th:field="*{estado}" class="form-control" style="height: 50px;">
+                        <option value="true" th:selected="${habitacion.estado}">Disponible</option>
+                        <option value="false" th:selected="${habitacion.estado == false}">No Disponible</option>
+                        <option value="false" th:selected="${habitacion.estado == false}">Mantenimiento</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="form-actions">
+            <button type="submit">Guardar</button>
+        </div>
+        <input type="hidden" th:field="*{id}"/>
+    </form>
+</div>
+</body>
+</html>

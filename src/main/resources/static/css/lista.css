@@ -1,0 +1,74 @@
+/* Estilos personalizados */
+body {
+    background-color: #f8f9fa;
+}
+
+.container {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    margin-bottom: 20px;
+}
+
+.form-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.form-column {
+    flex: 1;
+    margin-right: 20px;
+}
+
+.form-column:last-child {
+    margin-right: 0;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+}
+
+.form-actions {
+    margin-top: 20px;
+    text-align: right;
+}
+
+.form-actions button {
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.form-actions button:hover {
+    background-color: #0056b3;
+}
+
+/* Ajustes para el select */
+select {
+    height: 50px;
+}
+
+footer {
+    margin-top: 20px;
+}

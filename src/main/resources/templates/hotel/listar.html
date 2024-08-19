@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head th:replace="layout/layout :: head">
+
+</head>
+<body>
+<header th:replace="layout/layout :: header"></header>
+
+<div class="container">
+    <h1>Lista de Habitaciones</h1>
+    <a href="/hotel/form">Agregar Nueva Habitación</a>
+    <div th:if="${userPrincipal != null}">
+        <h1 class="titulo"> <span th:text="${userPrincipal.username}">User</span>!</h1>
+    </div>
+    <div class="card">
+        <div class="card-header">Gestion de Habitaciones</div>
+        <div class="card-body">
+            <!-- Botón para mostrar/ocultar filtro -->
+            <button class="toggle-filter-btn" onclick="toggleFilter()">Mostrar Filtros</button>
+
+            <div id="filterContainer" class="filter-container" style="display:none;">
+                <form th:action="@{/hotel/reporte}" method="get" class="filter-form">
+                    <div class="form-group">
+                        <label for="tipo">Tipo:</label>
+                        <select id="tipo" name="tipo" class="form-control form-control-sm">
+                            <option value="">Todas</option>
+                            <option th:each="tip : ${tipos}"
+                                    th:value="${tip}"
+                                    th:text="${tip}"
+                                    th:selected="${tip == selectedtipo}">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="estado">Estado:</label>
+                        <select id="estado" name="estado" class="form-control form-control-sm">
+                            <option value="">Todos</option>
+                            <option value="true" th:selected="${selectedEstado == true}">Disponible</option>
+                            <option value="false" th:selected="${selectedEstado == false}">Reposición</option>
+                            <option value="false" th:selected="${selectedEstado == false}">Mantenimiento</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="nombre">Numero de Habitacion:</label>
+                        <input type="text" id="nombre" name="nombre" class="form-control form-control-sm"
+                               th:value="${selectednumHabitacion}" placeholder="Numero de la Habitacion">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="precio">Precio por Noche:</label>
+                        <input type="number" id="precio" name="precio" class="form-control form-control-sm"
+                               th:value="${selectedprecioNoche}" placeholder="Precio Minimo">
+                    </div>
+                    <div class="btn-container">
+                        <button type="submit" class="btn btn-primary btn-sm">Generar</button>
+                        <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/hotel/reporte/excel(tipo=${selectedTipo}, estado=${selectedEstado}, numHabitacion=${selectednumHabitacion}, precioNoche=${selectedprecioNoche})}" class="btn btn-success btn-sm">Exportar a Excel</a>
+                        <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/hotel/reporte/pdf(tipo=${selectedTipo}, estado=${selectedEstado}, numHabitacion=${selectednumHabitacion}, precioNoche=${selectedprecioNoche})}" class="btn btn-info btn-sm">Exportar a PDF</a>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Contenedor de tabla -->
+            <div class="table-wrapper">
+
+                <!-- Mensaje si no hay productos -->
+                <div th:if="${noHabitacion!= null}" class="alert alert-warning">
+                    <p th:text="${noHabitacion}"></p>
+                </div>
+
+                <!-- Tabla de productos -->
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Numero de Habitacion</th>
+                        <th>Tipo</th>
+                        <th>Descripción</th>
+                        <th>Precio</th>
+                        <th>Estado</th>
+                        <th>Actualizar</th>
+                        <th>Eliminar</th>
+                        <th>Visualizar</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="habitacion : ${habitaciones}">
+                        <td th:text="${habitacion.id}"></td>
+                        <td th:text="${habitacion.numHabitacion}"></td>
+                        <td th:text="${habitacion.tipo}"></td>
+                        <td th:text="${habitacion.descripcion}"></td>
+                        <td th:text="${habitacion.precioNoche}"></td>
+                        <td th:text="${habitacion.estado ? 'Disponible' : 'No Disponible'}"></td>
+                        <td>
+                            <div class="action-buttons">
+                                <a th:href="@{/hotel/form/} + ${habitacion.id}" class="btn btn-primary btn-sm">Actualizar</a>
+                            </div>
+                        </td>
+                        <td>
+                            <a class="btn btn-danger btn-xs" th:href="@{/hotel/eliminar/} + ${habitacion.id}" th:text="'Eliminar'"
+                               onclick="return confirm('Esta seguro que desea eliminar?')"></a></td>
+                        <td>
+                            <div class="action-buttons">
+                                <a th:href="@{/hotel/ver/{id}(id=${habitacion.id})}" class="btn btn-info btn-sm">Ver</a>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleFilter() {
+        var filterContainer = document.getElementById('filterContainer');
+        if (filterContainer.style.display === 'none' || filterContainer.style.display === '') {
+            filterContainer.style.display = 'block';
+            document.querySelector('.toggle-filter-btn').textContent = 'Ocultar Filtros';
+        } else {
+            filterContainer.style.display = 'none';
+            document.querySelector('.toggle-filter-btn').textContent = 'Mostrar Filtros';
+        }
+    }
+
+</script>
+</body>
+</html>
